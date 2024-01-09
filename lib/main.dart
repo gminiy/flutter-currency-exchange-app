@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_exchange_currency/di/di_setup.dart';
 
 void main() {
+  diSetup();
   runApp(const MyApp());
 }
 
