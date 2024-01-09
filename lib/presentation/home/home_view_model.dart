@@ -4,17 +4,15 @@ import 'package:flutter_exchange_currency/domain/use_case/get_currency_use_case.
 import '../../core/result.dart';
 import 'home_state.dart';
 
-class HomeViewModel extends ChangeNotifier{
-  HomeState _state;
+class HomeViewModel extends ChangeNotifier {
+  HomeState _state = const HomeState();
   final GetCurrencyUseCase _getCurrencyUseCase;
 
   HomeState get state => _state;
 
   HomeViewModel({
-    required HomeState state,
     required GetCurrencyUseCase getCurrencyUseCase,
-  })  : _state = state,
-        _getCurrencyUseCase = getCurrencyUseCase;
+  }) : _getCurrencyUseCase = getCurrencyUseCase;
 
   Future<void> getCurrency() async {
     final Result result = await _getCurrencyUseCase.execute();
@@ -29,4 +27,15 @@ class HomeViewModel extends ChangeNotifier{
     }
   }
 
+  calcBaseAmount() {
+    final num baseAmount = state.targetAmount / state.currency;
+    _state = state.copyWith(baseAmount: baseAmount);
+    notifyListeners();
+  }
+
+  calcTargetAmount() {
+    final num targetAmount = state.baseAmount * state.currency;
+    _state = state.copyWith(targetAmount: targetAmount);
+    notifyListeners();
+  }
 }
