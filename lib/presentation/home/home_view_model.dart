@@ -24,7 +24,7 @@ class HomeViewModel extends ChangeNotifier {
       case Success():
         _state = state.copyWith(
           currency: result.data,
-        );
+        );경
         notifyListeners();
       case Error():
         print('Error');
