@@ -35,14 +35,14 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  calcBaseAmount() {
-    final num baseAmount = state.targetAmount / state.currency;
+  calcBaseAmount(num targetAmount) {
+    final num baseAmount = targetAmount / state.currency;
     _state = state.copyWith(baseAmount: baseAmount);
     notifyListeners();
   }
 
-  calcTargetAmount() {
-    final num targetAmount = state.baseAmount * state.currency;
+  calcTargetAmount(num baseAmount) {
+    final num targetAmount = baseAmount * state.currency;
     _state = state.copyWith(targetAmount: targetAmount);
     notifyListeners();
   }
