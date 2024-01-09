@@ -11,9 +11,14 @@ void main() {
     final repository = ConversionRateRepositoryImpl(api: api);
     final GetCurrencyUseCase getCurrencyUseCase = GetCurrencyUseCase(
         baseCode: 'USD',
-        targetCode: 'KOR',
+        targetCode: 'KRW',
         conversionRateRepository: repository);
-    final Result<num> currency = await getCurrencyUseCase.execute();
-    print(currency);
+    final Result<num> result = await getCurrencyUseCase.execute();
+    switch (result) {
+      case Success<num>():
+        expect(result.data.runtimeType, double);
+      case Error<num>():
+        // TODO: Handle this case.
+    }
   });
 }
