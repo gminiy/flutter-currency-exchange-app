@@ -16,10 +16,13 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> getCurrency(
       {required String baseCode, required String targetCode}) async {
+    _state = state.copyWith(baseCode: baseCode, targetCode: targetCode);
+
     final Result result = await _getCurrencyUseCase.execute(
       baseCode: state.baseCode,
       targetCode: state.targetCode,
     );
+
     switch (result) {
       case Success():
         _state = state.copyWith(
@@ -28,6 +31,7 @@ class HomeViewModel extends ChangeNotifier {
         notifyListeners();
       case Error():
         print('Error');
+        notifyListeners();
     }
   }
 

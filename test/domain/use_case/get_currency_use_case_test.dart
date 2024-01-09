@@ -10,10 +10,8 @@ void main() {
     final ConversionRateApi api = ConversionRateApi(dio: Dio());
     final repository = ConversionRateRepositoryImpl(api: api);
     final GetCurrencyUseCase getCurrencyUseCase = GetCurrencyUseCase(
-        baseCode: 'USD',
-        targetCode: 'KRW',
         conversionRateRepository: repository);
-    final Result<num> result = await getCurrencyUseCase.execute();
+    final Result<num> result = await getCurrencyUseCase.execute(baseCode: 'USD', targetCode: 'KRW');
     switch (result) {
       case Success<num>():
         expect(result.data.runtimeType, double);
