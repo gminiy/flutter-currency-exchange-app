@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_exchange_currency/core/constant/currency_codes.dart';
+import 'package:flutter_exchange_currency/presentation/home/home_view_model.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +13,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<HomeViewModel>();
+    final state = viewModel.state;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -20,7 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: TextField(
+                    child: TextFormField(
+                      initialValue: state.baseAmount,
                       onChanged: (value) {},
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -42,9 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   DropdownButton<String>(
+                    value: state.baseCode,
                     hint: Text('Choose a code'),
                     onChanged: (baseCode) {
-                      print(baseCode);
                     },
                     items: currencyCodes.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
@@ -61,7 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: TextField(
+                    child: TextFormField(
+                      initialValue: state.targetAmount,
                       onChanged: (value) {},
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -82,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   DropdownButton<String>(
+                    value: state.targetCode,
                     hint: Text('Choose a code'),
                     onChanged: (targetCode) {
                       print(targetCode);
