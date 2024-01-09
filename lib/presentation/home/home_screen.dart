@@ -127,8 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     onChanged: (targetCode) async {
                       await viewModel.getCurrency(
                           baseCode: viewModel.state.baseCode, targetCode: targetCode!);
-                      viewModel.calcBaseAmount(viewModel.state.targetAmount);
-                      baseAmountTextEditingController.text = viewModel.state.baseAmount.toString();
+                      viewModel.calcTargetAmount(viewModel.state.baseAmount);
+                      targetAmountTextEditingController.text = viewModel.state.targetAmount.toString();
                     },
                     items: currencyCodes
                         .map<DropdownMenuItem<String>>((String value) {
