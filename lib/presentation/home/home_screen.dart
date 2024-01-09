@@ -13,13 +13,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController baseAmountTextEditingController = TextEditingController();
   TextEditingController targetAmountTextEditingController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() async {
       final viewModel = context.read<HomeViewModel>();
       await viewModel.getCurrency(baseCode: viewModel.state.baseCode, targetCode: viewModel.state.targetCode);
-      viewModel.calcTargetAmount();
+      viewModel.calcTargetAmount(viewModel.state.baseAmount);
       baseAmountTextEditingController.text = viewModel.state.baseAmount.toString();
       targetAmountTextEditingController.text = viewModel.state.targetAmount.toString();
     });
@@ -28,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<HomeViewModel>();
-    final state = viewModel.state;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -41,7 +41,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: TextField(
                       controller: baseAmountTextEditingController,
                       onChanged: (value) {
-                        viewModel.calcTargetAmount();
+                        if (value.isEmpty) {
+                          targetAmountTextEditingController.text = '0';
+                          return;
+                        }
+                        viewModel.calcTargetAmount(num.parse(value));
+                        targetAmountTextEditingController.text = viewModel.state.targetAmount.toString();
                       },
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -63,14 +68,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   DropdownButton<String>(
-                    value: state.baseCode,
+                    value: viewModel.state.baseCode,
                     hint: const Text('Choose a code'),
                     onChanged: (baseCode) async {
                       await viewModel.getCurrency(
-                          baseCode: baseCode!, targetCode: state.targetCode);
+                          baseCode: baseCode!, targetCode: viewModel.state.targetCode);
 
-                      viewModel.calcTargetAmount();
-                      targetAmountTextEditingController.text = state.targetAmount.toString();
+                      viewModel.calcTargetAmount(viewModel.state.baseAmount);
+                      targetAmountTextEditingController.text = viewModel.state.targetAmount.toString();
                     },
                     items: currencyCodes
                         .map<DropdownMenuItem<String>>((String value) {
@@ -91,7 +96,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: TextField(
                       controller: targetAmountTextEditingController,
                       onChanged: (value) {
-                        viewModel.calcBaseAmount();
+                        if (value.isEmpty) {
+                          baseAmountTextEditingController.text = '0';
+                          return;
+                        }
+                        viewModel.calcBaseAmount(num.parse(value));
+                        baseAmountTextEditingController.text = viewModel.state.baseAmount.toString();
                       },
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -112,12 +122,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   DropdownButton<String>(
-                    value: state.targetCode,
+                    value: viewModel.state.targetCode,
                     hint: const Text('Choose a code'),
                     onChanged: (targetCode) async {
                       await viewModel.getCurrency(
-                          baseCode: state.baseCode, targetCode: targetCode!);
-                      viewModel.calcBaseAmount();
+                          baseCode: viewModel.state.baseCode, targetCode: targetCode!);
+                      viewModel.calcBaseAmount(viewModel.state.targetAmount);
+                      baseAmountTextEditingController.text = viewModel.state.baseAmount.toString();
                     },
                     items: currencyCodes
                         .map<DropdownMenuItem<String>>((String value) {
