@@ -11,6 +11,8 @@ class HomeState with _$HomeState {
     @Default(1) num currency,
     @Default(1) num baseAmount,
     @Default(1) num targetAmount,
+    @Default('USD') String baseCode,
+    @Default('KRW') String targetCode,
   }) = _HomeState;
 
   factory HomeState.fromJson(Map<String, Object?> json) => _$HomeStateFromJson(json);
