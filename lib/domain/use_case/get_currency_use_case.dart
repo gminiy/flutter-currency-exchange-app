@@ -5,17 +5,26 @@ import 'package:flutter_exchange_currency/domain/repository/conversion_rate_repo
 class GetCurrencyUseCase {
   final String defaultBaseCode = 'USD';
   final ConversionRateRepository _conversionRateRepository;
+  ConversionRateModel? conversionRateModel;
 
-  const GetCurrencyUseCase({
+  GetCurrencyUseCase({
     required ConversionRateRepository conversionRateRepository,
   }) : _conversionRateRepository = conversionRateRepository;
 
+  Future setConversionRateModel() async {
+    conversionRateModel =
+        await _conversionRateRepository.getConversionRate(defaultBaseCode);
+  }
+
   Future<Result<num>> execute(
       {required String baseCode, required String targetCode}) async {
-    final ConversionRateModel conversionRateModel =
-        await _conversionRateRepository.getConversionRate(defaultBaseCode);
-    final num? baseCurrency = conversionRateModel.rates[baseCode];
-    final num? targetCurrency = conversionRateModel.rates[targetCode];
+    if (conversionRateModel == null ||
+        DateTime.now().isAfter(conversionRateModel!.nextUpdateTime)) {
+      await setConversionRateModel();
+    }
+
+    final num? baseCurrency = conversionRateModel!.rates[baseCode];
+    final num? targetCurrency = conversionRateModel!.rates[targetCode];
 
     if (baseCurrency == null || targetCurrency == null) {
       return const Result.error('not support currency');
