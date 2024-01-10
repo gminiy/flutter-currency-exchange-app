@@ -11,7 +11,7 @@ class GetCurrencyUseCase {
     required ConversionRateRepository conversionRateRepository,
   }) : _conversionRateRepository = conversionRateRepository;
 
-  Future setConversionRateModel() async {
+  Future _setConversionRateModel() async {
     conversionRateModel =
         await _conversionRateRepository.getConversionRate(defaultBaseCode);
   }
@@ -20,7 +20,7 @@ class GetCurrencyUseCase {
       {required String baseCode, required String targetCode}) async {
     if (conversionRateModel == null ||
         DateTime.now().isAfter(conversionRateModel!.nextUpdateTime)) {
-      await setConversionRateModel();
+      await _setConversionRateModel();
     }
 
     final num? baseCurrency = conversionRateModel!.rates[baseCode];
